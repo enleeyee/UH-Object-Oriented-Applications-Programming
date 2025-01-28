@@ -43,33 +43,42 @@ def calculate_range(sensor_obj, n_samples):
 
 # Implement the plot function (defined with the same two parameters as the rest). This function generates a text-based chart of the data, ensuring the data is normalized so that the maximum line displayed is 40 characters long. That is, 0 v shows an empty line and 5 v shows a 40-char line.
 def plot(sensor_obj, n_samples):
-    maximum_character = 40
+    maximum_length = 40
     maximum_value = 5
     print('plot:')
     for _ in range(n_samples):
-        print('X' * int(sensor_obj.read() / maximum_value * maximum_character))
+        print('X' * int(sensor_obj.read() / maximum_value * maximum_length))
     print('\n')
 
 # Implement the count function (once again, defining the same two parameters). This function counts and visualizes the number of data samples falling into categories: below 0.25 V, between 0.25 V and 0.75 V, and above 0.75 V. Additionally, ensure the visual representation adheres to a maximum line length of 40 characters.
-def count(sensor_obj, n_samples):
+def count_voltage(sensor_obj, n_samples):
     below_025 = 0
     between_025_and_075 = 0
     above_075 = 0
 
+    threshold_025 = 0.25
+    threshold_075 = 0.75
+
     for _ in range(n_samples):
         sample = sensor_obj.read()
-        if sample < 0.25:
+        if sample < threshold_025:
             below_025 += 1
-        elif 0.25 <= sample <= 0.75:
+        elif threshold_025 <= sample <= threshold_075:
             between_025_and_075 += 1
         else:
             above_075 += 1
-    
+
+    return below_025, between_025_and_075, above_075
+
+def count(sensor_obj, n_samples):
+    below_025, between_025_and_075, above_075 = count_voltage(sensor_obj, n_samples)
     max_count = max(below_025, between_025_and_075, above_075, 1)
+    maximum_length = 40
+
     print('count:')
-    print('Below 0.25 V : ' + 'X' * int((below_025 / max_count) * 40))
-    print('0.25-0.75 V  : ' + 'X' * int((between_025_and_075 / max_count) * 40))
-    print('Above 0.75 V : ' + 'X' * int((above_075 / max_count) * 40))
+    print('Below 0.25V : ' + 'X' * int((below_025 / max_count) * maximum_length))
+    print('0.25V-0.75V : ' + 'X' * int((between_025_and_075 / max_count) * maximum_length))
+    print('Above 0.75V : ' + 'X' * int((above_075 / max_count) * maximum_length))
     print('\n')
 
 def main():
