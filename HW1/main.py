@@ -48,7 +48,6 @@ def plot(sensor_obj, n_samples):
     print('plot:')
     for _ in range(n_samples):
         print('X' * int(sensor_obj.read() / maximum_value * maximum_length))
-    print('\n')
 
 # Implement the count function (once again, defining the same two parameters). This function counts and visualizes the number of data samples falling into categories: below 0.25 V, between 0.25 V and 0.75 V, and above 0.75 V. Additionally, ensure the visual representation adheres to a maximum line length of 40 characters.
 def count_voltage(sensor_obj, n_samples):
@@ -79,7 +78,6 @@ def count(sensor_obj, n_samples):
     print('Below 0.25V : ' + 'X' * int((below_025 / max_count) * maximum_length))
     print('0.25V-0.75V : ' + 'X' * int((between_025_and_075 / max_count) * maximum_length))
     print('Above 0.75V : ' + 'X' * int((above_075 / max_count) * maximum_length))
-    print('\n')
 
 def main():
     num_samples = 100
