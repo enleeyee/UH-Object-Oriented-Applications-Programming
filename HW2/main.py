@@ -11,6 +11,17 @@ def read_data(file_name):
     with open(file_name, "r") as raw_file: return [float(line.strip()) for line in raw_file if line.strip()]        
 
 # stats: Accepts a list of floats as input. It returns the average, median, minimum, and maximum values of the list passed as argument. Note that the median is the middle element of the sorted list. If the number of elements is even, then the median is the average of the two middle elements.
+def calculate_average(data):
+    return sum(data) / len(data)
+
+def calculate_median(data):
+    sorted_data = sorted(data)
+    mid = len(sorted_data) // 2
+    return sorted_data[mid] if len(sorted_data) % 2 else (sorted_data[mid - 1] + sorted_data[mid]) / 2
+
+def stats(data):
+    if not data: raise ValueError("The data list is empty.")
+    return calculate_average(data), calculate_median(data), min(data), max(data)
 
 # normalize: Accepts a list of floats and scales all values between 0 and 1 based on the minimum and maximum values. The function returns the normalized list. Implement the operation yourself.
 
@@ -25,6 +36,8 @@ def read_data(file_name):
 
 def main():
     data = read_data("data.dat")
+
+    print(stats(data))
 
 if __name__ == '__main__':
     main()
