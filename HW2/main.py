@@ -5,10 +5,13 @@
 
 from os import path
 
+def validate_data(data):
+    if not data: raise ValueError("The data list is empty.")     
+
 # read_data: Returns a list of floats after reading the content of data.dat. The name of the file is passed as the single argument of this function.
 def read_data(file_name):
     if not path.isfile(file_name): raise FileNotFoundError("The file was not found.")
-    with open(file_name, "r") as raw_file: return [float(line.strip()) for line in raw_file if line.strip()]        
+    with open(file_name, "r") as raw_file: return [float(line.strip()) for line in raw_file if line.strip()]   
 
 # stats: Accepts a list of floats as input. It returns the average, median, minimum, and maximum values of the list passed as argument. Note that the median is the middle element of the sorted list. If the number of elements is even, then the median is the average of the two middle elements.
 def calculate_average(data):
@@ -20,12 +23,18 @@ def calculate_median(data):
     return sorted_data[mid] if len(sorted_data) % 2 else (sorted_data[mid - 1] + sorted_data[mid]) / 2
 
 def stats(data):
-    if not data: raise ValueError("The data list is empty.")
     return calculate_average(data), calculate_median(data), min(data), max(data)
 
 # normalize: Accepts a list of floats and scales all values between 0 and 1 based on the minimum and maximum values. The function returns the normalized list. Implement the operation yourself.
+def normalize(data, minimum, maximum):
+    if minimum == maximum: return [0] * len(data)
+    return [(x - minimum) / (maximum - minimum) for x in data]
 
 # moving_average: Accepts a list of floats and a window size. It returns a new list where each element is the average of the previous window_size elements. You may use sum.
+def moving_average(data, window_size):
+    if window_size <= 0: raise ValueError("Window size must be greater than zero.")
+    return [sum(data[i:i+window_size]) / len(data[i:i+window_size]) for i in range(len(data) - window_size + 1)]
+
 
 # count: Accepts a list of floats as input and one integer that indicates the number of bins. Your function splits the range of data values into that number of bins and returns the count of data samples per bin. You must implement this operation (do not use a library to do the job).
 
@@ -37,7 +46,13 @@ def stats(data):
 def main():
     data = read_data("data.dat")
 
-    print(stats(data))
+    validate_data(data)
+
+    average, median, minimum, maximum = stats(data)
+
+    print(normalize(data, minimum, maximum))
+
+    print(moving_average(data, 1))
 
 if __name__ == '__main__':
     main()
