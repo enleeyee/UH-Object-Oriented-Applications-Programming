@@ -71,10 +71,20 @@ def plot(data, start, end, average, minimum, maximum):
     plt.savefig("chart1.png")
     print("Plot saved as chart1.png")
 
-    plt.show()
-
 # plot_count: Create a Matplotlib chart of the bin count results in ascending order, i.e, of the output of count. No need to label the horizontal axis in this case. Use bar not hist. Save the chart in PNG format to a file named: chart2.png.
+def plot_count(bin_count):
+    if not bin_count or any(b < 0 for b in bin_count): raise ValueError("Invalid bin count result.")
 
+    sorted_bins = sorted(bin_count)
+
+    plt.figure(figsize=(8, 6))
+    plt.bar(range(len(sorted_bins)), sorted_bins, color='b')
+
+    plt.title("Bin Count Results (Ascending Order)")
+    plt.ylabel("Frequency")
+
+    plt.savefig("chart2.png")
+    print("Plot saved as chart2.png")
 
 def main():
     data = read_data("data.dat")
@@ -89,9 +99,13 @@ def main():
 
     print(moving_average(data, 1))
 
-    print(count(data, 4))
+    bin_count = count(data, 4)
 
     plot(data, 0, 50, average, minimum, maximum)
+
+    plot_count(bin_count)
+
+    plt.close()
 
 if __name__ == '__main__':
     main()
