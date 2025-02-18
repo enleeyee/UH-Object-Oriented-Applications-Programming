@@ -5,8 +5,14 @@
 
 from os import path
 
+MINIMUM_DATA = None
+MAXIMUM_DATA = None
+
 def validate_data(data):
-    if not data: raise ValueError("The data list is empty.")     
+    if not data: raise ValueError("The data list is empty.")  
+
+def validate_min_max():
+    if MINIMUM_DATA is None or MAXIMUM_DATA is None: raise ValueError("Global min and max are not set. Ensure stats() is called first.")
 
 # read_data: Returns a list of floats after reading the content of data.dat. The name of the file is passed as the single argument of this function.
 def read_data(file_name):
@@ -23,22 +29,28 @@ def calculate_median(data):
     return sorted_data[mid] if len(sorted_data) % 2 else (sorted_data[mid - 1] + sorted_data[mid]) / 2
 
 def stats(data):
-    return calculate_average(data), calculate_median(data), min(data), max(data)
+    global MINIMUM_DATA, MAXIMUM_DATA
+    MINIMUM_DATA, MAXIMUM_DATA = min(data), max(data)
+    return calculate_average(data), calculate_median(data), MINIMUM_DATA, MAXIMUM_DATA
 
 # normalize: Accepts a list of floats and scales all values between 0 and 1 based on the minimum and maximum values. The function returns the normalized list. Implement the operation yourself.
-def normalize(data, minimum, maximum):
-    if minimum == maximum: return [0] * len(data)
-    return [(x - minimum) / (maximum - minimum) for x in data]
+def normalize(data):
+    if MINIMUM_DATA == MAXIMUM_DATA: return [0] * len(data)
+    return [(x - MINIMUM_DATA) / (MAXIMUM_DATA - MINIMUM_DATA) for x in data]
 
 # moving_average: Accepts a list of floats and a window size. It returns a new list where each element is the average of the previous window_size elements. You may use sum.
 def moving_average(data, window_size):
     if window_size <= 0: raise ValueError("Window size must be greater than zero.")
     return [sum(data[i:i+window_size]) / len(data[i:i+window_size]) for i in range(len(data) - window_size + 1)]
 
-
 # count: Accepts a list of floats as input and one integer that indicates the number of bins. Your function splits the range of data values into that number of bins and returns the count of data samples per bin. You must implement this operation (do not use a library to do the job).
+def count(data, bins):
+    if bins <= 0: raise ValueError("Bin size must be greater than zero")
+    bin_width = (MAXIMUM_DATA - MINIMUM_DATA) / bins
+    return [sum(MINIMUM_DATA + i * bin_width <= x < MINIMUM_DATA + (i + 1) * bin_width for x in data) for i in range(bins - 1)] + [sum(x >= MINIMUM_DATA + (bins - 1) * bin_width for x in data)]
 
 # plot: Create a Matplotlib chart of a slice of the data that lies within the range provided as input (i.e., start and end indices, excluding the end index). In addition to the data sample values, the chart shows the average, min, and max values obtained by stats as horizontal lines. Make sure that you label the axes and plots properly. Save the chart in PNG format to a file named: chart1.png.
+
 
 # plot_count: Create a Matplotlib chart of the bin count results in ascending order, i.e, of the output of count. No need to label the horizontal axis in this case. Use bar not hist. Save the chart in PNG format to a file named: chart2.png.
 
@@ -50,9 +62,13 @@ def main():
 
     average, median, minimum, maximum = stats(data)
 
-    print(normalize(data, minimum, maximum))
+    validate_min_max()
+
+    print(normalize(data))
 
     print(moving_average(data, 1))
+
+    print(count(data, 4))
 
 if __name__ == '__main__':
     main()
