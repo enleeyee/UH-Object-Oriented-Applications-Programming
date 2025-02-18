@@ -3,6 +3,7 @@
 
 # ENLAI YII <edyii@cougarnet.uh.edu> (2064210)
 
+from matplotlib import pyplot as plt
 from os import path
 
 MINIMUM_DATA = None
@@ -50,7 +51,27 @@ def count(data, bins):
     return [sum(MINIMUM_DATA + i * bin_width <= x < MINIMUM_DATA + (i + 1) * bin_width for x in data) for i in range(bins - 1)] + [sum(x >= MINIMUM_DATA + (bins - 1) * bin_width for x in data)]
 
 # plot: Create a Matplotlib chart of a slice of the data that lies within the range provided as input (i.e., start and end indices, excluding the end index). In addition to the data sample values, the chart shows the average, min, and max values obtained by stats as horizontal lines. Make sure that you label the axes and plots properly. Save the chart in PNG format to a file named: chart1.png.
+def plot(data, start, end, average, minimum, maximum):
+    if start < 0 or end > len(data) or start >= end: raise ValueError("Invalid start or end indices.")
 
+    data_slice = data[start:end]
+
+    plt.figure(figsize=(10,6))
+    plt.plot(data_slice, marker='o', linestyle='-', color='b', label='Data')
+
+    plt.axhline(y=average, color='r', linestyle='--', label=f"Average: {average:.2f}")
+    plt.axhline(y=minimum, color='g', linestyle='--', label=f"Min: {minimum:.2f}")
+    plt.axhline(y=maximum, color='purple', linestyle='--', label=f"Max: {maximum:.2f}")
+
+    plt.xlabel("Index")
+    plt.ylabel("Value")
+    plt.title("Data Visualization with Statistics")
+    plt.legend()
+
+    plt.savefig("chart1.png")
+    print("Plot saved as chart1.png")
+
+    plt.show()
 
 # plot_count: Create a Matplotlib chart of the bin count results in ascending order, i.e, of the output of count. No need to label the horizontal axis in this case. Use bar not hist. Save the chart in PNG format to a file named: chart2.png.
 
@@ -69,6 +90,8 @@ def main():
     print(moving_average(data, 1))
 
     print(count(data, 4))
+
+    plot(data, 0, 50, average, minimum, maximum)
 
 if __name__ == '__main__':
     main()

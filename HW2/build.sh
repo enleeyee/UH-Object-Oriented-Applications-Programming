@@ -12,17 +12,14 @@ chmod +x $SCRIPT
 # Create a virtual environment if it doesn't exist
 if [ ! -d "$VENV_DIR" ]; then
     python3 -m venv $VENV_DIR
-    echo "Virtual environment created."c
+    echo "Virtual environment created."
 fi
 
 # Activate the virtual environment
 source $VENV_DIR/bin/activate
 
-# Install dependencies (if needed)
-if [ -f "requirements.txt" ]; then
-    pip install -r requirements.txt
-    echo "Dependencies installed."
-fi
+# Install matplotlib directly
+pip show matplotlib &> /dev/null || pip install matplotlib && echo "matplotlib installed."
 
 # Run the Python script
 python3 $SCRIPT
