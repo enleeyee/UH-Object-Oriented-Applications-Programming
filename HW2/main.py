@@ -36,9 +36,13 @@ def moving_average(data_samples, window_size):
     if window_size <= 0 or window_size > len(data_samples): raise ValueError("Window size must be between 1 and the data length.")
     return [sum(data_samples[i:i+window_size]) / len(data_samples[i:i+window_size]) for i in range(len(data_samples) - window_size + 1)]
 
-def count(data_samples, bins, minimum, maximum):
+def count(data_samples, bins):
     """Returns the count of data samples per bin."""
     if bins <= 0: raise ValueError("Bin size must be greater than zero")
+
+    minimum, maximum = min(data_samples), max(data_samples)
+    if minimum == maximum: return [len(data_samples)] + [0] * (bins - 1) 
+
     bin_width = (maximum - minimum) / bins
     return [sum(minimum + i * bin_width <= x < minimum + (i + 1) * bin_width for x in data_samples) for i in range(bins - 1)] + [sum(x >= minimum + (bins - 1) * bin_width for x in data_samples)]
 
@@ -87,7 +91,7 @@ def main():
     normalized_data = normalize(data_samples, minimum, maximum)
     moving_average_result = moving_average(data_samples, 1)
 
-    bin_frequencies = count(data_samples, 4, minimum, maximum)
+    bin_frequencies = count(data_samples, 4)
 
     plot(data_samples, 0, 50, average, minimum, maximum)
     plot_count(bin_frequencies)
