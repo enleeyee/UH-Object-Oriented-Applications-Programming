@@ -33,7 +33,7 @@ def normalize(data_samples, minimum, maximum):
 
 def moving_average(data_samples, window_size):
     """Returns a new list where each element is the average of the previous window_size elements."""
-    if window_size <= 0: raise ValueError("Window size must be greater than zero.")
+    if window_size <= 0 or window_size > len(data_samples): raise ValueError("Window size must be between 1 and the data length.")
     return [sum(data_samples[i:i+window_size]) / len(data_samples[i:i+window_size]) for i in range(len(data_samples) - window_size + 1)]
 
 def count(data_samples, bins, minimum, maximum):
@@ -80,19 +80,16 @@ def plot_count(bin_count):
 
 def main():
     data_samples = read_data("data.dat")
-
-    validate_data(data_samples)
+    validate_data(data_samples) # validate right after reading data.dat
 
     average, median, minimum, maximum = stats(data_samples)
 
     normalized_data = normalize(data_samples, minimum, maximum)
-
-    moving_avgerage_result = moving_average(data_samples, 1)
+    moving_average_result = moving_average(data_samples, 1)
 
     bin_frequencies = count(data_samples, 4, minimum, maximum)
 
     plot(data_samples, 0, 50, average, minimum, maximum)
-
     plot_count(bin_frequencies)
 
     plt.close()
