@@ -6,55 +6,47 @@
 from matplotlib import pyplot as plt
 from os import path
 
-MINIMUM_DATA = None
-MAXIMUM_DATA = None
-
-def validate_data(data):
-    if not data: raise ValueError("The data list is empty.")  
-
-def validate_min_max():
-    if MINIMUM_DATA is None or MAXIMUM_DATA is None: raise ValueError("Global min and max are not set. Ensure stats() is called first.")
+def validate_data(data_samples):
+    if not data_samples: raise ValueError("The data list is empty.")  
 
 def read_data(file_name):
     """Returns a list of floats after reading the content of data.dat"""
     if not path.isfile(file_name): raise FileNotFoundError("The file was not found.")
-    with open(file_name, "r") as raw_file: return [float(line.strip()) for line in raw_file if line.strip()]   
+    with open(file_name, "r") as data_file: return [float(line.strip()) for line in data_file if line.strip()]   
 
-def calculate_average(data):
-    return sum(data) / len(data)
+def calculate_average(data_samples):
+    return sum(data_samples) / len(data_samples)
 
-def calculate_median(data):
-    sorted_data = sorted(data)
+def calculate_median(data_samples):
+    sorted_data = sorted(data_samples)
     mid = len(sorted_data) // 2
     return sorted_data[mid] if len(sorted_data) % 2 else (sorted_data[mid - 1] + sorted_data[mid]) / 2
 
-def stats(data):
+def stats(data_samples):
     """Returns the average, median, minimum, and maximum values of the list passed as argument."""
-    global MINIMUM_DATA, MAXIMUM_DATA
-    MINIMUM_DATA, MAXIMUM_DATA = min(data), max(data)
-    return calculate_average(data), calculate_median(data), MINIMUM_DATA, MAXIMUM_DATA
+    return calculate_average(data_samples), calculate_median(data_samples), min(data_samples), max(data_samples)
 
-def normalize(data):
+def normalize(data_samples, minimum, maximum):
     """Returns the normalized list of all values between 0 and 1 based on the minimum and maximum values."""
-    if MINIMUM_DATA == MAXIMUM_DATA: return [0] * len(data)
-    return [(x - MINIMUM_DATA) / (MAXIMUM_DATA - MINIMUM_DATA) for x in data]
+    if minimum == maximum: return [0] * len(data_samples)
+    return [(x - minimum) / (maximum - minimum) for x in data_samples]
 
-def moving_average(data, window_size):
+def moving_average(data_samples, window_size):
     """Returns a new list where each element is the average of the previous window_size elements."""
     if window_size <= 0: raise ValueError("Window size must be greater than zero.")
-    return [sum(data[i:i+window_size]) / len(data[i:i+window_size]) for i in range(len(data) - window_size + 1)]
+    return [sum(data_samples[i:i+window_size]) / len(data_samples[i:i+window_size]) for i in range(len(data_samples) - window_size + 1)]
 
-def count(data, bins):
+def count(data_samples, bins, minimum, maximum):
     """Returns the count of data samples per bin."""
     if bins <= 0: raise ValueError("Bin size must be greater than zero")
-    bin_width = (MAXIMUM_DATA - MINIMUM_DATA) / bins
-    return [sum(MINIMUM_DATA + i * bin_width <= x < MINIMUM_DATA + (i + 1) * bin_width for x in data) for i in range(bins - 1)] + [sum(x >= MINIMUM_DATA + (bins - 1) * bin_width for x in data)]
+    bin_width = (maximum - minimum) / bins
+    return [sum(minimum + i * bin_width <= x < minimum + (i + 1) * bin_width for x in data_samples) for i in range(bins - 1)] + [sum(x >= minimum + (bins - 1) * bin_width for x in data_samples)]
 
-def plot(data, start, end, average, minimum, maximum):
+def plot(data_samples, start, end, average, minimum, maximum):
     """Creates a chart that shows the average, min, and max values obtained by stats."""
-    if start < 0 or end > len(data) or start >= end: raise ValueError("Invalid start or end indices.")
+    if start < 0 or end > len(data_samples) or start >= end: raise ValueError("Invalid start or end indices.")
 
-    data_slice = data[start:end]
+    data_slice = data_samples[start:end]
 
     plt.figure(figsize=(10,6))
     plt.plot(data_slice, marker='o', linestyle='-', color='b', label='Data')
@@ -87,23 +79,21 @@ def plot_count(bin_count):
     print("Plot saved as chart2.png")
 
 def main():
-    data = read_data("data.dat")
+    data_samples = read_data("data.dat")
 
-    validate_data(data)
+    validate_data(data_samples)
 
-    average, median, minimum, maximum = stats(data)
+    average, median, minimum, maximum = stats(data_samples)
 
-    validate_min_max()
+    normalized_data = normalize(data_samples, minimum, maximum)
 
-    normal = normalize(data)
+    moving_avgerage_result = moving_average(data_samples, 1)
 
-    moving_avg = moving_average(data, 1)
+    bin_frequencies = count(data_samples, 4, minimum, maximum)
 
-    bin_count = count(data, 4)
+    plot(data_samples, 0, 50, average, minimum, maximum)
 
-    plot(data, 0, 50, average, minimum, maximum)
-
-    plot_count(bin_count)
+    plot_count(bin_frequencies)
 
     plt.close()
 
