@@ -15,7 +15,7 @@ def setup():
 
 @task
 def test():
-    sh('python -m coverage run --source src --omit="src/wordle_gui.py" -m unittest discover -s test')
+    sh('python -m coverage run --source src -m unittest discover -s test')
     sh('python -m coverage html')
     sh('python -m coverage report --show-missing')
     
@@ -35,10 +35,6 @@ def radon():
     sh('radon cc src -a -nb > radon.report')
     if os.stat("radon.report").st_size != 0:
         raise Exception('radon found complex code')
-    
-@task
-def run():
-    sh('python src/wordle_gui.py')
 
 @task
 @needs(['setup', 'clean', 'test', 'radon'])

@@ -7,13 +7,25 @@ from csv import DictReader
 from math import inf
 
 def mean(values):
-    """Returns the mean of a list of values."""
     return sum(values) / len(values) if values else 0
+
+def ratio(count, total):
+    return count / total if total else 0
+
+def is_hot(temp_avg):
+    return temp_avg >= 85
+
+def is_rainy(rainfall):
+    return rainfall > 0
+
+def is_fair_or_partly_cloudy(cloud9am, cloud3pm):
+    return cloud9am in {"Fair", "Partly Cloudy"} or cloud3pm in {"Fair", "Partly Cloudy"}
 
 def read_weather_data(file_name):
     """Reads weather data from a CSV file and returns a summary dictionary."""
     temperatures, rainfalls, wind_speeds, humidities, pressures = [], [], [], [], []
     min_temp, max_temp = inf, -inf
+    hot_days, rainy_days, fair_days, total_days = 0, 0, 0, 0
 
     with open(file_name, newline='') as csv_file:
         reader = DictReader(csv_file)
@@ -31,6 +43,11 @@ def read_weather_data(file_name):
             humidities.append(humidity_avg)
             pressures.append(pressure_avg)
 
+            hot_days += is_hot(temp_avg)
+            rainy_days += is_rainy(float(row['rainfall']))
+            fair_days += is_fair_or_partly_cloudy(row['cloud9am'], row['cloud3pm'])
+            total_days += 1
+
     return {
         'a_temp': mean(temperatures),
         'a_min_temp': min_temp,
@@ -39,6 +56,9 @@ def read_weather_data(file_name):
         'a_wind': mean(wind_speeds),
         'a_humidity': mean(humidities),
         'a_pressure': mean(pressures),
+        'p_hot': ratio(hot_days, total_days),
+        'p_rain': ratio(rainy_days, total_days),
+        'p_sunshine': ratio(fair_days, total_days)
     }
 
 def main():

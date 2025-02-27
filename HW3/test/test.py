@@ -21,7 +21,13 @@ class TestWeatherFunctions(unittest.TestCase):
         self.assertIn('a_wind', summary)
         self.assertIn('a_humidity', summary)
         self.assertIn('a_pressure', summary)
+        self.assertIn('p_hot', summary)
+        self.assertIn('p_rain', summary)
+        self.assertIn('p_sunshine', summary)
 
+        self.assertTrue(0 <= summary['p_hot'] <= 1)
+        self.assertTrue(0 <= summary['p_rain'] <= 1)
+        self.assertTrue(0 <= summary['p_sunshine'] <= 1)
         self.assertTrue(summary['a_min_temp'] <= summary['a_temp'] <= summary['a_max_temp'])
 
 if __name__ == '__main__':
