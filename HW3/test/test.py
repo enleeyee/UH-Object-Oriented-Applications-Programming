@@ -14,15 +14,15 @@ class TestWeatherFunctions(unittest.TestCase):
         summary = read_weather_data(test_data)
         
         self.assertIsInstance(summary, dict)
-        self.assertIn('avg_temp', summary)
-        self.assertIn('min_temp', summary)
-        self.assertIn('max_temp', summary)
-        self.assertIn('avg_rainfall', summary)
-        self.assertIn('avg_wind_speed', summary)
-        self.assertIn('avg_humidity', summary)
-        self.assertIn('avg_pressure', summary)
+        self.assertIn('a_temp', summary)
+        self.assertIn('a_min_temp', summary)
+        self.assertIn('a_max_temp', summary)
+        self.assertIn('a_rainfall', summary)
+        self.assertIn('a_wind', summary)
+        self.assertIn('a_humidity', summary)
+        self.assertIn('a_pressure', summary)
 
-        self.assertTrue(summary['min_temp'] <= summary['avg_temp'] <= summary['max_temp'])
+        self.assertTrue(summary['a_min_temp'] <= summary['a_temp'] <= summary['a_max_temp'])
 
 if __name__ == '__main__':
     unittest.main()

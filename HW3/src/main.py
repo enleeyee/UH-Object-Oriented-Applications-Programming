@@ -32,13 +32,13 @@ def read_weather_data(file_name):
             pressures.append(pressure_avg)
 
     return {
-        'avg_temp': mean(temperatures),
-        'min_temp': min_temp,
-        'max_temp': max_temp,
-        'avg_rainfall': mean(rainfalls),
-        'avg_wind_speed': mean(wind_speeds),
-        'avg_humidity': mean(humidities),
-        'avg_pressure': mean(pressures),
+        'a_temp': mean(temperatures),
+        'a_min_temp': min_temp,
+        'a_max_temp': max_temp,
+        'a_rainfall': mean(rainfalls),
+        'a_wind': mean(wind_speeds),
+        'a_humidity': mean(humidities),
+        'a_pressure': mean(pressures),
     }
 
 def main():
