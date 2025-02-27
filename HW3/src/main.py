@@ -5,6 +5,17 @@
 
 from csv import DictReader
 from math import inf
+from os import path
+
+BASE_DIR = path.dirname(path.dirname(path.abspath(__file__)))
+WEATHER_YEARS = ('2006', '2010', '2011', '2012', '2013', '2014', '2015', '2018', '2019', '2021')
+YEAR_LENGTH = 10
+
+def to_float(value, default = 0.0):
+    try:
+        return float(value)
+    except ValueError:
+        return default
 
 def mean(values):
     return sum(values) / len(values) if values else 0
@@ -30,21 +41,21 @@ def read_weather_data(file_name):
     with open(file_name, newline='') as csv_file:
         reader = DictReader(csv_file)
         for row in reader:
-            temp_avg = (float(row['temp9am']) + float(row['temp3pm'])) / 2
-            wind_avg = (float(row['wind_speed9am']) + float(row['wind_speed3pm'])) / 2
-            humidity_avg = (float(row['humidity9am']) + float(row['humidity3pm'])) / 2
-            pressure_avg = (float(row['pressure9am']) + float(row['pressure3pm'])) / 2
+            temp_avg = (to_float(row['temp9am']) + to_float(row['temp3pm'])) / 2
+            wind_avg = (to_float(row['wind_speed9am']) + to_float(row['wind_speed3pm'])) / 2
+            humidity_avg = (to_float(row['humidity9am']) + to_float(row['humidity3pm'])) / 2
+            pressure_avg = (to_float(row['pressure9am']) + to_float(row['pressure3pm'])) / 2
 
             temperatures.append(temp_avg)
-            min_temp = min(min_temp, float(row['min_temp']))
-            max_temp = max(max_temp, float(row['max_temp']))
-            rainfalls.append(float(row['rainfall']))
+            min_temp = min(min_temp, to_float(row['min_temp']))
+            max_temp = max(max_temp, to_float(row['max_temp']))
+            rainfalls.append(to_float(row['rainfall']))
             wind_speeds.append(wind_avg)
             humidities.append(humidity_avg)
             pressures.append(pressure_avg)
 
             hot_days += is_hot(temp_avg)
-            rainy_days += is_rainy(float(row['rainfall']))
+            rainy_days += is_rainy(to_float(row['rainfall']))
             fair_days += is_fair_or_partly_cloudy(row['cloud9am'], row['cloud3pm'])
             total_days += 1
 
@@ -62,7 +73,10 @@ def read_weather_data(file_name):
     }
 
 def main():
-    print(read_weather_data("./archive/test.csv"))
+    weather_summary_years = []
+    for year in WEATHER_YEARS:
+        csv_file_path = path.join(BASE_DIR, "archive", "htx_" + year + "_weather.csv")
+        weather_summary_years.append(read_weather_data(csv_file_path))
 
 if __name__ == '__main__':
     main()
