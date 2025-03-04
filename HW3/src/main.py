@@ -76,10 +76,22 @@ def process_humidity(summary_years):
     """Returns a dictionary of average humidity values per year."""
     return {WEATHER_YEARS[i] : summary_years[i]['a_humidity'] for i in range(YEAR_LENGTH)}
 
+def create_summary_year_list(summary_years, attribute):
+    return [year[attribute] for year in summary_years] if attribute else []
+
 def process_sunshine(summary_years):
     """Returns the smallest and the largest sunshine ratios for the observation period."""
-    sunshine_ratios = [year['p_sunshine'] for year in summary_years] 
+    sunshine_ratios = create_summary_year_list(summary_years, 'p_sunshine')
     return min(sunshine_ratios), max(sunshine_ratios)
+
+def process_temperature(summary_years):
+    """Returns four lists: average temperatures, minimum temperatures, maximum temperatures, and hot day ratios per year."""
+    return (
+        create_summary_year_list(summary_years, 'a_temp'),
+        create_summary_year_list(summary_years, 'a_min_temp'),
+        create_summary_year_list(summary_years, 'a_max_temp'),
+        create_summary_year_list(summary_years, 'p_hot')
+    )
 
 def main():
     weather_summary_years = []
@@ -89,6 +101,7 @@ def main():
 
     print(process_humidity(weather_summary_years))
     print(process_sunshine(weather_summary_years))
+    print(process_temperature(weather_summary_years))
 
 if __name__ == '__main__':
     main()
