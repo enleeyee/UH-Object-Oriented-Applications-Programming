@@ -74,11 +74,12 @@ def read_weather_data(file_name):
 
 def process_humidity(summary_years):
     """Returns a dictionary of average humidity values per year."""
-    humidity_years = {}
-    for i in range(YEAR_LENGTH):
-        humidity_years[WEATHER_YEARS[i]] = summary_years[i]['a_humidity']
-    return humidity_years
+    return {WEATHER_YEARS[i] : summary_years[i]['a_humidity'] for i in range(YEAR_LENGTH)}
 
+def process_sunshine(summary_years):
+    """Returns the smallest and the largest sunshine ratios for the observation period."""
+    sunshine_ratios = [year['p_sunshine'] for year in summary_years] 
+    return min(sunshine_ratios), max(sunshine_ratios)
 
 def main():
     weather_summary_years = []
@@ -87,6 +88,7 @@ def main():
         weather_summary_years.append(read_weather_data(csv_file_path))
 
     print(process_humidity(weather_summary_years))
+    print(process_sunshine(weather_summary_years))
 
 if __name__ == '__main__':
     main()

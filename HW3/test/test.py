@@ -1,5 +1,5 @@
 import unittest
-from src.main import to_float, read_weather_data, process_humidity
+from src.main import to_float, read_weather_data, process_humidity, process_sunshine
 
 test_data_summary_year = [
     {
@@ -40,6 +40,10 @@ test_data_summary_year = [
     }
 ]
 
+def init_global_variables():
+    weather_years = ["2020", "2021", "2022"]
+    return weather_years, len(weather_years)
+
 class TestWeatherFunctions(unittest.TestCase):
 
     def test_to_float(self):
@@ -70,8 +74,7 @@ class TestWeatherFunctions(unittest.TestCase):
 
     def test_process_humidity(self):
         from src import main
-        main.WEATHER_YEARS = ["2020", "2021", "2022"] 
-        main.YEAR_LENGTH = len(main.WEATHER_YEARS)
+        main.WEATHER_YEARS, main.YEAR_LENGTH = init_global_variables()
         
         humidity_year = process_humidity(test_data_summary_year)
 
@@ -80,6 +83,16 @@ class TestWeatherFunctions(unittest.TestCase):
 
         expected_humidities = {main.WEATHER_YEARS[i]: test_data_summary_year[i]['a_humidity'] for i in range(main.YEAR_LENGTH)}
         self.assertEqual(humidity_year, expected_humidities)
+
+    def test_process_sunshine(self):
+        from src import main
+        main.WEATHER_YEARS, main.YEAR_LENGTH = init_global_variables()
+
+        smallest_sunshine_ratio, largest_sunshine_ratio = process_sunshine(test_data_summary_year)
+
+        self.assertTrue(smallest_sunshine_ratio < largest_sunshine_ratio)
+        self.assertTrue(smallest_sunshine_ratio, 0.5)
+        self.assertTrue(largest_sunshine_ratio, 0.75)
 
 if __name__ == '__main__':
     unittest.main()
