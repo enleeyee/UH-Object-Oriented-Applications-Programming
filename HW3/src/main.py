@@ -99,9 +99,20 @@ def read_weather_data_from_rows(rows):
         'p_sunshine': ratio(fair_days, total_days)
     }
 
+def _process_humidity_generic(summary_data, extractor):
+    """Generic function to process humidity data using the given extractor function."""
+    return {WEATHER_YEARS[i]: extractor(summary_data[i]) for i in range(YEAR_LENGTH)}
+
 def process_humidity(summary_years):
     """Returns a dictionary of average humidity values per year."""
-    return {WEATHER_YEARS[i] : summary_years[i]['a_humidity'] for i in range(YEAR_LENGTH)}
+    return _process_humidity_generic(summary_years, lambda summary: summary['a_humidity'])
+
+def process_humidity_2(summary_season_years):
+    """Returns a dictionary of average humidity values per year for warm and cold seasons."""
+    return {
+        'warm': _process_humidity_generic(summary_season_years, lambda summary: summary['warm']['a_humidity']),
+        'cold': _process_humidity_generic(summary_season_years, lambda summary: summary['cold']['a_humidity']),
+    }
 
 def create_summary_year_list(summary_years, attribute):
     return [year[attribute] for year in summary_years] if attribute else []
@@ -130,9 +141,12 @@ def main():
     print('Sunshine:', process_sunshine(weather_summary_years))
     print('Temperature:', process_temperature(weather_summary_years))
 
+    weather_season_summary_years = []
     for year in WEATHER_YEARS:
         csv_file_path = path.join(BASE_DIR, 'archive', f'htx_{year}_weather.csv')
-        weather_summary_years.append(read_weather_data_2(csv_file_path))
+        weather_season_summary_years.append(read_weather_data_2(csv_file_path))
+
+    print('Humidity:', process_humidity_2(weather_season_summary_years))
 
 if __name__ == '__main__':
     main()
