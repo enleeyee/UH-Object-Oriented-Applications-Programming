@@ -141,6 +141,23 @@ def process_temperature(summary_years):
         _create_summary_year_generic(summary_years, lambda summary: summary['p_hot'])
     )
 
+def process_temperature_2(summary_season_years):
+    """Returns four lists: average temperatures, minimum temperatures, maximum temperatures, and hot day ratios per year for warm and cold seasons."""
+    return {
+        'warm': (
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['warm']['a_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['warm']['a_min_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['warm']['a_max_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['warm']['p_hot']),
+        ),
+        'cold': (
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['cold']['a_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['cold']['a_min_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['cold']['a_max_temp']),
+            _create_summary_year_generic(summary_season_years, lambda summary: summary['cold']['p_hot']),
+        ),
+    }
+
 def main():
     weather_summary_years = []
     for year in WEATHER_YEARS:
@@ -158,6 +175,7 @@ def main():
 
     print('Humidity:', process_humidity_2(weather_season_summary_years))
     print('Sunshine:', process_sunshine_2(weather_season_summary_years))
+    print('Temperature:', process_temperature_2(weather_season_summary_years))
 
 if __name__ == '__main__':
     main()

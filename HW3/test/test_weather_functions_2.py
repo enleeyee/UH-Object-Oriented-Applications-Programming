@@ -1,7 +1,7 @@
 import unittest
 from test_weather_main import TestWeatherMain
 from test_weather_variables import test_file, test_data_summary_season_year, init_global_variables
-from src.main import read_weather_data_2, process_humidity_2, process_sunshine_2
+from src.main import read_weather_data_2, process_humidity_2, process_sunshine_2, process_temperature_2
 
 class TestWeatherFunctionsTwo(unittest.TestCase):
 
@@ -45,5 +45,14 @@ class TestWeatherFunctionsTwo(unittest.TestCase):
             smallest_sunshine_ratio, largest_sunshine_ratio = season_sunshine_ratios[season]
             self.assertTrue(smallest_sunshine_ratio <= largest_sunshine_ratio)
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_process_temperature_2(self):
+        from src import main
+        main.WEATHER_YEARS, main.YEAR_LENGTH = init_global_variables()
+        season_temperature_lists = process_temperature_2(test_data_summary_season_year)
+
+        for season in ['warm', 'cold']:
+            avg_temps, min_temps, max_temps, hot_ratios = season_temperature_lists[season]
+            self.assertEqual(len(avg_temps), main.YEAR_LENGTH)
+            self.assertEqual(len(min_temps), main.YEAR_LENGTH)
+            self.assertEqual(len(max_temps), main.YEAR_LENGTH)
+            self.assertEqual(len(hot_ratios), main.YEAR_LENGTH)
