@@ -12,24 +12,30 @@ WEATHER_YEARS = ('2006', '2010', '2011', '2012', '2013', '2014', '2015', '2018',
 YEAR_LENGTH = 10
 
 def to_float(value, default = 0.0):
+    """Converts valid values into floats or default value 0.0."""
     try:
         return float(value)
     except ValueError:
         return default
 
 def mean(values):
+    """Returns the mean of values or 0 if not valid."""
     return sum(values) / len(values) if values else 0
 
 def ratio(count, total):
+    """Returns the ratio of values or 0 if not valid."""
     return count / total if total else 0
 
 def is_hot(temp_avg):
+    """Returns True if the temperature is hot."""
     return temp_avg >= 85
 
 def is_rainy(rainfall):
+    """Returns True if there has been rain."""
     return rainfall > 0
 
 def is_fair_or_partly_cloudy(cloud9am, cloud3pm):
+    """Returns True if there are fair or partly cloudy."""
     return cloud9am in {'Fair', 'Partly Cloudy'} or cloud3pm in {'Fair', 'Partly Cloudy'}
 
 def is_warm_season(month):
@@ -96,7 +102,7 @@ def read_weather_data_from_rows(rows):
         'a_pressure': mean(pressures),
         'p_hot': ratio(hot_days, total_days),
         'p_rain': ratio(rainy_days, total_days),
-        'p_sunshine': ratio(fair_days, total_days)
+        'p_sunshine': ratio(fair_days, total_days),
     }
 
 def _process_humidity_generic(summary_data, extractor):
@@ -138,7 +144,7 @@ def process_temperature(summary_years):
         _create_summary_year_generic(summary_years, lambda summary: summary['a_temp']),
         _create_summary_year_generic(summary_years, lambda summary: summary['a_min_temp']),
         _create_summary_year_generic(summary_years, lambda summary: summary['a_max_temp']),
-        _create_summary_year_generic(summary_years, lambda summary: summary['p_hot'])
+        _create_summary_year_generic(summary_years, lambda summary: summary['p_hot']),
     )
 
 def process_temperature_2(summary_season_years):
