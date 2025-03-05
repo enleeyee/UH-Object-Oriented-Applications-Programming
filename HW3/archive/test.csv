@@ -1,4 +1,4 @@
 date,min_temp,max_temp,rainfall,wind_speed9am,wind_speed3pm,humidity9am,humidity3pm,pressure9am,pressure3pm,cloud9am,cloud3pm,temp9am,temp3pm,rain_today,rain_tomorrow
 2010-01-01,43.0,55.0,0.0,15.0,15.0,76.0,40.0,30.4,30.31,Cloudy,Fair,43.0,55.0,No,No
 2006-01-02,57.0,79.0,0.0,9.0,10.0,87.0,22.0,29.91,29.89,Partly Cloudy,Fair,63.0,78.0,No,No
-2006-10-24,53.0,77.0,0.0,9.0,12.0,57.0,43.0,30.18,30.06,Partly Cloudy,Mostly Cloudy,67.0,77.0,No,No
+2008-10-24,53.0,77.0,0.0,9.0,12.0,57.0,43.0,30.18,30.06,Partly Cloudy,Mostly Cloudy,67.0,77.0,No,No

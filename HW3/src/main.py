@@ -123,6 +123,15 @@ def process_sunshine(summary_years):
     sunshine_ratios = _create_summary_year_generic(summary_years, lambda summary: summary['p_sunshine'])
     return min(sunshine_ratios), max(sunshine_ratios)
 
+def process_sunshine_2(summary_season_years):
+    """Returns the smallest and the largest sunshine ratios for the observation period for warm and cold seasons."""
+    warm_sunshine_ratios = _create_summary_year_generic(summary_season_years, lambda summary: summary['warm']['p_sunshine'])
+    cold_sunshine_ratios = _create_summary_year_generic(summary_season_years, lambda summary: summary['cold']['p_sunshine'])
+    return {
+        'warm': (min(warm_sunshine_ratios), max(warm_sunshine_ratios)),
+        'cold': (min(cold_sunshine_ratios), max(cold_sunshine_ratios)),
+    }
+
 def process_temperature(summary_years):
     """Returns four lists: average temperatures, minimum temperatures, maximum temperatures, and hot day ratios per year."""
     return (
@@ -148,6 +157,7 @@ def main():
         weather_season_summary_years.append(read_weather_data_2(csv_file_path))
 
     print('Humidity:', process_humidity_2(weather_season_summary_years))
+    print('Sunshine:', process_sunshine_2(weather_season_summary_years))
 
 if __name__ == '__main__':
     main()
