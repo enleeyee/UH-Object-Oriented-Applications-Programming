@@ -30,7 +30,7 @@ def is_rainy(rainfall):
     return rainfall > 0
 
 def is_fair_or_partly_cloudy(cloud9am, cloud3pm):
-    return cloud9am in {"Fair", "Partly Cloudy"} or cloud3pm in {"Fair", "Partly Cloudy"}
+    return cloud9am in {'Fair', 'Partly Cloudy'} or cloud3pm in {'Fair', 'Partly Cloudy'}
 
 def is_warm_season(month):
     """Returns True if the month is in the warm season (March–October)."""
@@ -57,8 +57,8 @@ def read_weather_data_2(file_name):
         reader = DictReader(csv_file)
         warm_rows, cold_rows = split_by_season(list(reader))
     return {
-        "warm": read_weather_data_from_rows(warm_rows),
-        "cold": read_weather_data_from_rows(cold_rows),
+        'warm': read_weather_data_from_rows(warm_rows),
+        'cold': read_weather_data_from_rows(cold_rows),
     }
 
 def read_weather_data_from_rows(rows):
@@ -123,15 +123,15 @@ def process_temperature(summary_years):
 def main():
     weather_summary_years = []
     for year in WEATHER_YEARS:
-        csv_file_path = path.join(BASE_DIR, "archive", "htx_" + year + "_weather.csv")
+        csv_file_path = path.join(BASE_DIR, 'archive', f'htx_{year}_weather.csv')
         weather_summary_years.append(read_weather_data(csv_file_path))
 
-    print("Humidity:", process_humidity(weather_summary_years))
-    print("Sunshine:", process_sunshine(weather_summary_years))
-    print("Temperature:", process_temperature(weather_summary_years))
+    print('Humidity:', process_humidity(weather_summary_years))
+    print('Sunshine:', process_sunshine(weather_summary_years))
+    print('Temperature:', process_temperature(weather_summary_years))
 
     for year in WEATHER_YEARS:
-        csv_file_path = path.join(BASE_DIR, "archive", f"htx_{year}_weather.csv")
+        csv_file_path = path.join(BASE_DIR, 'archive', f'htx_{year}_weather.csv')
         weather_summary_years.append(read_weather_data_2(csv_file_path))
 
 if __name__ == '__main__':
