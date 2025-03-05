@@ -1,5 +1,5 @@
 import unittest
-from parameterized import param, parameterized
+from parameterized import parameterized
 from src.main import to_float
 
 class TestWeatherMain(unittest.TestCase):
@@ -31,4 +31,3 @@ class TestWeatherMain(unittest.TestCase):
 
     def _validate_temperature_range(self, summary):
         self.assertTrue(summary['a_min_temp'] <= summary['a_temp'] <= summary['a_max_temp'])
-        

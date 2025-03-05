@@ -101,7 +101,7 @@ def read_weather_data_from_rows(rows):
 
 def _process_humidity_generic(summary_data, extractor):
     """Generic function to process humidity data using the given extractor function."""
-    return {WEATHER_YEARS[i]: extractor(summary_data[i]) for i in range(YEAR_LENGTH)}
+    return {WEATHER_YEARS[i]: extractor(summary_data[i]) for i in range(YEAR_LENGTH)} if summary_data else []
 
 def process_humidity(summary_years):
     """Returns a dictionary of average humidity values per year."""
@@ -114,21 +114,22 @@ def process_humidity_2(summary_season_years):
         'cold': _process_humidity_generic(summary_season_years, lambda summary: summary['cold']['a_humidity']),
     }
 
-def create_summary_year_list(summary_years, attribute):
-    return [year[attribute] for year in summary_years] if attribute else []
+def _create_summary_year_generic(summary_data, extractor):
+    """Generic function to extract a list of attributes from summary data using an extractor function."""
+    return [extractor(year) for year in summary_data] if summary_data else []
 
 def process_sunshine(summary_years):
     """Returns the smallest and the largest sunshine ratios for the observation period."""
-    sunshine_ratios = create_summary_year_list(summary_years, 'p_sunshine')
+    sunshine_ratios = _create_summary_year_generic(summary_years, lambda summary: summary['p_sunshine'])
     return min(sunshine_ratios), max(sunshine_ratios)
 
 def process_temperature(summary_years):
     """Returns four lists: average temperatures, minimum temperatures, maximum temperatures, and hot day ratios per year."""
     return (
-        create_summary_year_list(summary_years, 'a_temp'),
-        create_summary_year_list(summary_years, 'a_min_temp'),
-        create_summary_year_list(summary_years, 'a_max_temp'),
-        create_summary_year_list(summary_years, 'p_hot')
+        _create_summary_year_generic(summary_years, lambda summary: summary['a_temp']),
+        _create_summary_year_generic(summary_years, lambda summary: summary['a_min_temp']),
+        _create_summary_year_generic(summary_years, lambda summary: summary['a_max_temp']),
+        _create_summary_year_generic(summary_years, lambda summary: summary['p_hot'])
     )
 
 def main():
