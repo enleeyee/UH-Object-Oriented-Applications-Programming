@@ -41,8 +41,20 @@ class Webscrapper:
         soup = self.get_soup(url)
 
         airq_value_element = soup.find("a", class_="aqiDetailItemGroupCompact-E1_1")
-        return to_int(airq_value_element.find_all("div", {"aria-hidden":"true"})[-1].get_text(strip=True)) if airq_value_element else None
+        return to_int(
+            airq_value_element.find_all("div", {"aria-hidden":"true"})[-1].get_text(strip=True)
+        ) if airq_value_element else None
+    
+    def get_wind(self, url):
+        """Scrapes and returns the current wind speed."""
+        soup = self.get_soup(url)
 
+        wind_speed_element = soup.find("a", class_="detailItemGroup-E1_1")
+        return to_int(
+            wind_speed_element.find("div", id="CurrentDetailLineWindValue").get_text(strip=True)
+            .replace(" mph", "")
+        ) if wind_speed_element else None
+    
 class Proxy:
 
     app = None
@@ -53,6 +65,9 @@ class Proxy:
         self.app.add_url_rule("/airq", "airq", self.dispatch_airq_req)
         self.url = "https://www.msn.com/en-us/weather/forecast"
 
+    def run(self):
+        self.app.run()
+
     def dispatch_temp_req(self):
         currect_temperature, feels_like_temperature = Webscrapper().get_temp(self.url)
         return {'current': currect_temperature, 'feels like': feels_like_temperature}
@@ -61,12 +76,14 @@ class Proxy:
         air_quality = Webscrapper().get_airq(self.url)
         return {'air quality': air_quality}
     
-    def run(self):
-        self.app.run()
+    def dispatch_wind_req(self):
+        wind_speed = Webscrapper().get_wind(self.url)
+        return {'wind': wind_speed}
 
 if __name__ == "__main__":
     p = Proxy(__name__)
     print(p.dispatch_temp_req())
     print(p.dispatch_airq_req())
+    print(p.dispatch_wind_req())
     # p.run()
         
