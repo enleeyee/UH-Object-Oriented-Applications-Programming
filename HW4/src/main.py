@@ -55,6 +55,15 @@ class Webscrapper:
             .replace(" mph", "")
         ) if wind_speed_element else None
     
+    def get_humidity(self, url):
+        soup = self.get_soup(url)
+
+        humidity_rate_element = soup.find_all("a", class_="detailItemGroup-E1_1")[1]
+        return to_int(
+            humidity_rate_element.find("div", id="CurrentDetailLineHumidityValue").get_text(strip=True)
+            .replace("%", "")
+        ) if humidity_rate_element else None
+    
 class Proxy:
 
     app = None
@@ -79,11 +88,16 @@ class Proxy:
     def dispatch_wind_req(self):
         wind_speed = Webscrapper().get_wind(self.url)
         return {'wind': wind_speed}
+    
+    def dispatch_get_humidity_req(self):
+        humidity_rate = Webscrapper().get_humidity(self.url)
+        return {'humidity': humidity_rate}
 
 if __name__ == "__main__":
     p = Proxy(__name__)
     print(p.dispatch_temp_req())
     print(p.dispatch_airq_req())
     print(p.dispatch_wind_req())
+    print(p.dispatch_get_humidity_req())
     # p.run()
         
