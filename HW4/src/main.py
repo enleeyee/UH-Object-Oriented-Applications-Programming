@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
+# ENLAI YII <edyii@cougarnet.uh.edu> (2064210)
+
 from bs4 import BeautifulSoup
 from flask import Flask
 from re import sub
