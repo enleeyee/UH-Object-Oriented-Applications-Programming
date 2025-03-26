@@ -35,6 +35,10 @@ def radon():
     sh('radon cc src -a -nb > radon.report')
     if os.stat("radon.report").st_size != 0:
         raise Exception('radon found complex code')
+    
+@task
+def run():
+    sh('python3 src/main.py')
 
 @task
 @needs(['setup', 'clean', 'test', 'radon'])
