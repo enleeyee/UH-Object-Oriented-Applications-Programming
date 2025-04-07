@@ -113,27 +113,27 @@ class Proxy:
             </body>
         </html>
         """
-        return FlaskResponse(html_content, status=200, content_type='text/html')
+        return FlaskResponse(html_content, status=200, content_type = "text/html")
 
     def dispatch_temp_req(self):
         """Handles requests for temperature data."""
         temperature_data = self.scraper.get_temp()
-        return FlaskResponse(dumps(temperature_data), status = 200, headers = {})
+        return FlaskResponse(dumps(temperature_data), status = 200, content_type = "application/json")
     
     def dispatch_airq_req(self):
-        """Handles reqests for air quality data."""
+        """Handles requests for air quality data."""
         air_quality_data = self.scraper.get_airq()
-        return FlaskResponse(dumps(air_quality_data), status = 200, headers = {})
+        return FlaskResponse(dumps(air_quality_data), status = 200, content_type = "application/json")
     
     def dispatch_wind_req(self):
-        """Handles reqests for wind speed data."""
+        """Handles requests for wind speed data."""
         wind_speed_data = self.scraper.get_wind()
-        return FlaskResponse(dumps(wind_speed_data), status = 200, headers = {})
+        return FlaskResponse(dumps(wind_speed_data), status = 200, content_type = "application/json")
     
     def dispatch_get_humidity_req(self):
-        """Handles reqests for humidity data."""
+        """Handles requests for humidity data."""
         humidity_rate_data = self.scraper.get_humidity()
-        return FlaskResponse(dumps(humidity_rate_data), status = 200, headers = {})
+        return FlaskResponse(dumps(humidity_rate_data), status = 200, content_type = "application/json")
 
     def run(self):
         """Starts the Flask web server to serve API requests."""
